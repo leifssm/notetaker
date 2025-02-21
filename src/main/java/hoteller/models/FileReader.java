@@ -19,7 +19,6 @@ public class FileReader {
   public FileReader(@NotNull String filename) throws FileNotFoundException {
     this.filename = filename;
     URL url = FilePathManager.getFileUrl(filename);
-    System.out.println(url);
     file = new File(url.getFile());
   }
 

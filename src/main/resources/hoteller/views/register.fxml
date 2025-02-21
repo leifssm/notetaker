@@ -8,20 +8,22 @@
 <?import javafx.scene.layout.VBox?>
 
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hoteller.controllers.LoginController" >
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hoteller.controllers.RegisterController" >
    <center>
       <VBox maxHeight="-Infinity" maxWidth="-Infinity" BorderPane.alignment="CENTER">
          <children>
             <Label text="Brukernavn" />
-            <TextField fx:id="username" />
+            <TextField />
             <Label text="Passord" />
-            <TextField fx:id="password"/>
-            <Label text="" fx:id="feedback">
+            <TextField />
+            <Label text="Gjenta passord" />
+            <TextField />
+            <Label text="">
                <VBox.margin>
                   <Insets bottom="10.0" top="10.0" />
                </VBox.margin>
             </Label>
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Logg inn" onAction="#login">
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Registrer">
                <VBox.margin>
                   <Insets />
                </VBox.margin>

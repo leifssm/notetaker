@@ -19,6 +19,7 @@ public class AppController implements Initializable {
       .viewProperty()
       .subscribe(view -> app.setCenter(view));
     Router.addRoute("/login", CustomFXMLLoader.loadFXML("login.fxml"));
+    Router.addRoute("/register", CustomFXMLLoader.loadFXML("register.fxml"));
     Router.addRoute("/hotels", CustomFXMLLoader.loadFXML("login.fxml"));
     Router.gotoRoute("/login");
   }
