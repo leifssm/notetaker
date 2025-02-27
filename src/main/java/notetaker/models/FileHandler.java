@@ -1,4 +1,4 @@
-package hoteller.models;
+package notetaker.models;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,26 +13,15 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import hoteller.App;
+import notetaker.App;
 
 public class FileHandler {
-  public static void main(String[] args) throws FileNotFoundException {
-    // String path = "users.txt";
-    String path = "notes/gunnar/test/test.txt";
-    // System.out.println("force : " + getAbstractAbsolutePath(path));
-    // System.out.println("soft  : " + getAbsolutePath(path));
-    // System.out.println("isDir : " + directoryExists(path));
-    // System.out.println("isFile: " + fileExists(path));
-    appendToFile(path, "Hello, World!");
-    System.out.println(readFile(path));
-  }
-
   // Get Paths
 
   private static @NotNull String getAbstractAbsolutePath(@NotNull String path) {
     URL url = App.class.getResource("storage/");
     if (url == null) {
-      throw new RuntimeException("Storage not found: /resources/hoteller/storage");
+      throw new RuntimeException("Storage not found: /resources/notetaker/storage");
     }
     boolean shouldAddSlash = path.matches("(?:.*\\/)?\\w+");
     return url.getFile() + path + (shouldAddSlash ? "/" : "");
@@ -187,7 +176,7 @@ public class FileHandler {
   public static @NotNull URL getImageResource(String filePath) {
     URL url = App.class.getResource("images/" + filePath);
     if (url == null) {
-      throw new RuntimeException("Resource not found: /resources/hoteller/images/" + filePath);
+      throw new RuntimeException("Resource not found: /resources/notetaker/images/" + filePath);
     }
     return url;
   }
@@ -195,7 +184,7 @@ public class FileHandler {
   public static @NotNull URL getFXMLResource(String filePath) {
     URL url = App.class.getResource("views/" + filePath);
     if (url == null) {
-      throw new RuntimeException("Resource not found: /resources/hoteller/views/" + filePath);
+      throw new RuntimeException("Resource not found: /resources/notetaker/views/" + filePath);
     }
     return url;
   }

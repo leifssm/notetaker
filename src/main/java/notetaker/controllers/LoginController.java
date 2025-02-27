@@ -1,18 +1,20 @@
-package hoteller.controllers;
+package notetaker.controllers;
 
-import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import hoteller.models.LoginHandler;
-import hoteller.models.Router;
-import hoteller.models.LoginHandler.LoginError;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import notetaker.models.Globals;
+import notetaker.models.LoginHandler;
+import notetaker.models.Router;
+import notetaker.models.LoginHandler.LoginError;
 
-public class LoginController implements Initializable {
+public class LoginController implements Initializable, BaseController {
+  private Globals globals;
+
   @FXML
   private TextField username;
 
@@ -27,11 +29,11 @@ public class LoginController implements Initializable {
 
   @FXML
   public void initialize(URL location, ResourceBundle resources) {
-    try {
-      loginHandler = new LoginHandler();
-    } catch (FileNotFoundException e) {
-      handleError(e);
-    }
+    loginHandler = new LoginHandler();
+  }
+
+  public void setGlobals(Globals globals) {
+    this.globals = globals;
   }
 
   @FXML
@@ -40,13 +42,23 @@ public class LoginController implements Initializable {
     String password = this.password.getText();
     try {
       loginHandler.login(username, password);
-      Router.gotoRoute("/hotels");
+      globals.user.set(username);
+      Router.gotoRoute("/notes");
     } catch (LoginError e) {
       handleError(e);
     }
   }
 
+  @FXML
+  public void gotoRegister() {
+    Router.gotoRoute("/register");
+  }
+
   private void handleError(Exception error) {
-    feedback.setText(error.getMessage());
+    handleError(error.getMessage());
+  }
+
+  private void handleError(String error) {
+    feedback.setText(error);
   }
 }
