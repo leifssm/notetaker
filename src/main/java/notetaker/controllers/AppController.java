@@ -17,7 +17,7 @@ public class AppController implements Initializable, BaseController {
   private BorderPane app;
 
   public void setGlobals(Globals globals) {
-    this.globals = globals;
+    throw new RuntimeException("Can't set globals on the AppController");
   }
 
   @FXML

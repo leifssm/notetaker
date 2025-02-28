@@ -13,15 +13,15 @@ public class NoteHandler {
   public static @NotNull String getNote(@NotNull String user, @NotNull String note) throws FileNotFoundException {
     return FileHandler.readFile(getNotePath(user, note));
   }
-  
+
   public static void setNote(@NotNull String user, @NotNull String note, @NotNull String content) {
-    FileHandler.createFile(getNotePath(user, note), content);
+    FileHandler.setFile(getNotePath(user, note), content);
   }
-  
+
   public static void createNote(@NotNull String user, @NotNull String note) {
     FileHandler.createFile(getNotePath(user, note));
   }
-  
+
   public static @NotNull List<String> getNotes(@NotNull String user) {
     if (!FileHandler.directoryExists("notes/" + user)) {
       return List.of();
