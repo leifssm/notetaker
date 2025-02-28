@@ -4,11 +4,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
-
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,44 +20,48 @@ import notetaker.App;
 public class FileHandler {
   // Get Paths
 
-  private static @NotNull String getAbstractAbsolutePath(@NotNull String path) {
+  private static @NotNull String getAbstractAbsolutePath(@NotNull String filePath) {
     URL url = App.class.getResource("storage/");
     if (url == null) {
       throw new RuntimeException("Storage not found: /resources/notetaker/storage");
     }
-    boolean shouldAddSlash = path.matches("(?:.*\\/)?\\w+");
-    return url.getFile() + path + (shouldAddSlash ? "/" : "");
+    boolean shouldAddSlash = filePath.matches("(?:.*\\/)?\\w+");
+    return url.getFile() + filePath + (shouldAddSlash ? "/" : "");
   }
 
-  private static @Nullable String getAbsolutePath(@NotNull String path) {
-    URL url = App.class.getResource("storage/" + path);
-    return url != null ? url.getFile() : null;
+  private static @Nullable String getAbsolutePath(@NotNull String filePath) {
+    URL url = App.class.getResource("storage/" + filePath);
+    try {
+      return url != null ? url.toURI().getPath() : null;
+    } catch (URISyntaxException e) {
+      return null;
+    }
   }
 
   // File pathing
 
-  private static boolean isValidFilePath(@Nullable String path) {
-    return path != null && !path.matches(".*/");
+  private static boolean isValidFilePath(@Nullable String filePath) {
+    return filePath != null && !filePath.matches(".*/");
   }
 
-  public static @Nullable String getValidFilePath(@NotNull String filename) {
-    String path = getAbstractAbsolutePath(filename);
+  public static @Nullable String getValidFilePath(@NotNull String filePath) {
+    String path = getAbstractAbsolutePath(filePath);
     return isValidFilePath(path) ? path : null;
   }
 
-  public static @Nullable String getExistingFilePath(@NotNull String filename) {
-    String path = getAbsolutePath(filename);
+  public static @Nullable String getExistingFilePath(@NotNull String filePath) {
+    String path = getAbsolutePath(filePath);
     return isValidFilePath(path) ? path : null;
   }
 
-  public static boolean fileExists(@NotNull String filename) {
-    return getExistingFilePath(filename) != null;
+  public static boolean fileExists(@NotNull String filePath) {
+    return getExistingFilePath(filePath) != null;
   }
 
   // Directory pathing
 
-  private static boolean isValidDirectoryPath(@Nullable String path) {
-    return path != null && path.matches(".*/");
+  private static boolean isValidDirectoryPath(@Nullable String directoryPath) {
+    return directoryPath != null && directoryPath.matches(".*/");
   }
 
   public static @Nullable String getValidDirectoryPath(@NotNull String directoryPath) {
@@ -74,43 +80,42 @@ public class FileHandler {
 
   // File operations
 
-  public static @NotNull String readFile(@NotNull String filename) throws FileNotFoundException {
-    String path = getExistingFilePath(filename);
+  public static @NotNull String readFile(@NotNull String filePath) throws FileNotFoundException {
+    String path = getExistingFilePath(filePath);
     if (path == null) {
-      throw new FileNotFoundException("File not found: " + filename);
+      throw new FileNotFoundException("File not found: " + filePath);
     }
 
-    File file = new File(path);
     try {
+      File file = new File(path);
       return Files.readString(file.toPath());
     } catch (IOException e) {
-      throw new FileNotFoundException("Could not read file: " + filename);
+      throw new FileNotFoundException("Could not read file: " + filePath);
     }
   }
 
-  public static void appendToFile(@NotNull String filename, @NotNull String content) throws FileNotFoundException {
-    String path = getExistingFilePath(filename);
+  public static void appendToFile(@NotNull String filePath, @NotNull String content) throws FileNotFoundException {
+    String path = getExistingFilePath(filePath);
     if (path == null) {
-      throw new FileNotFoundException("File not found: " + filename);
+      throw new FileNotFoundException("File not found: " + filePath);
     }
 
     File file = new File(path);
 
     try {
       Files.write(
-        file.toPath(),
-        content.getBytes(),
-        StandardOpenOption.APPEND
-      );
+          file.toPath(),
+          content.getBytes(),
+          StandardOpenOption.APPEND);
     } catch (IOException e) {
-      throw new RuntimeException("Could not append to file: " + filename);
+      throw new RuntimeException("Could not append to file: " + filePath);
     }
   }
 
-  public static boolean createFile(@NotNull String filename) {
-    String path = getValidFilePath(filename);
+  public static boolean createFile(@NotNull String filePath) {
+    String path = getValidFilePath(filePath);
     if (path == null) {
-      throw new IllegalArgumentException("Invalid file path: " + filename);
+      throw new IllegalArgumentException("Invalid file path: " + filePath);
     }
     File file = new File(path);
     file.getParentFile().mkdirs();
@@ -122,10 +127,10 @@ public class FileHandler {
     }
   }
 
-  public static void createFile(@NotNull String filename, @NotNull String content) {
-    createFile(filename);
+  public static void setFile(@NotNull String filePath, @NotNull String content) {
+    createFile(filePath);
 
-    String path = getValidFilePath(filename);
+    String path = getValidFilePath(filePath);
     File file = new File(path);
 
     try {
@@ -133,12 +138,41 @@ public class FileHandler {
       writer.print(content);
       writer.close();
     } catch (IOException e) {
-      throw new RuntimeException("Could not write to file: " + filename);
+      throw new RuntimeException("Could not write to file: " + filePath);
     }
   }
 
+  public static void deleteFile(@NotNull String filePath) {
+    String path = getExistingFilePath(filePath);
+    if (path == null) {
+      throw new IllegalArgumentException("File not found: " + filePath);
+    }
+
+    File file = new File(path);
+    file.delete();
+  }
+
+  public static @Nullable String renameFile(@NotNull String filePath, @NotNull String newName) {
+    String path = getExistingFilePath(filePath);
+    
+    if (path == null) {
+      throw new IllegalArgumentException("Invalid file path: " + filePath);
+    }
+
+    File newPath = new File(path).toPath().resolveSibling(newName).toFile();
+    if (newPath.exists()) {
+      return null;
+    }
+
+    boolean success = new File(path).renameTo(newPath);
+    if (success) {
+      return newPath.toURI().getPath();
+    }
+    return null;
+  }
+
   // Directory operations
-  
+
   public static void createDirectory(@NotNull String directoryPath) {
     String path = getValidDirectoryPath(directoryPath);
     if (path == null) {
@@ -149,7 +183,8 @@ public class FileHandler {
     directory.mkdirs();
   }
 
-  public static @NotNull List<@NotNull String> getFilesInDirectory(@NotNull String directoryPath) throws FileNotFoundException {
+  public static @NotNull List<@NotNull String> getFilesInDirectory(@NotNull String directoryPath)
+      throws FileNotFoundException {
     String path = getExistingDirectoryPath(directoryPath);
     if (path == null) {
       throw new FileNotFoundException("Directory not found: " + directoryPath);
@@ -159,7 +194,8 @@ public class FileHandler {
     return List.of(directory.list());
   }
 
-  public static @NotNull List<@NotNull String> getFilesInDirectory(@NotNull String directoryPath, boolean createMissing) {
+  public static @NotNull List<@NotNull String> getFilesInDirectory(@NotNull String directoryPath,
+      boolean createMissing) {
     if (createMissing) {
       createDirectory(directoryPath);
     }
