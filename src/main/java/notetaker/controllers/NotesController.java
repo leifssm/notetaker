@@ -50,7 +50,6 @@ public class NotesController implements BaseController, Initializable {
     content.textProperty().subscribe(this::contentChanged);
     fileName.focusedProperty().addListener((observable, oldValue, focused) -> {
       if (!focused) {
-        System.out.println("lost focus");
         renameNote(fileName.getText());
       }
     });
