@@ -9,7 +9,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import notetaker.models.Globals;
 import notetaker.models.LoginHandler;
-import notetaker.models.Router;
 import notetaker.models.LoginHandler.LoginError;
 
 public class LoginController implements Initializable, BaseController {
@@ -29,7 +28,7 @@ public class LoginController implements Initializable, BaseController {
 
   @FXML
   public void initialize(URL location, ResourceBundle resources) {
-    loginHandler = new LoginHandler();
+    loginHandler = new LoginHandler("users.txt");
   }
 
   public void setGlobals(Globals globals) {
@@ -43,7 +42,7 @@ public class LoginController implements Initializable, BaseController {
     try {
       loginHandler.login(username, password);
       globals.user.set(username);
-      Router.gotoRoute("/notes");
+      globals.router.gotoRoute("/notes");
     } catch (LoginError e) {
       handleError(e);
     }
@@ -51,7 +50,7 @@ public class LoginController implements Initializable, BaseController {
 
   @FXML
   public void gotoRegister() {
-    Router.gotoRoute("/register");
+    globals.router.gotoRoute("/register");
   }
 
   private void handleError(Exception error) {

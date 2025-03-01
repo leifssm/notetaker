@@ -8,7 +8,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.layout.BorderPane;
 import notetaker.models.CustomFXMLLoader;
 import notetaker.models.Globals;
-import notetaker.models.Router;
 
 public class AppController implements Initializable, BaseController {
   private Globals globals = new Globals();
@@ -22,17 +21,17 @@ public class AppController implements Initializable, BaseController {
 
   @FXML
   public void initialize(URL location, ResourceBundle resources) {
-    Router
+    globals.router
         .viewProperty()
         .subscribe(view -> app.setCenter(view));
-    Router
+    globals.router
         .routeProperty()
         .subscribe(route -> {
           System.out.println("Navigating to: " + route);
         });
-    Router.addRoute("/login", () -> CustomFXMLLoader.loadFXML("login.fxml", globals));
-    Router.addRoute("/register", () -> CustomFXMLLoader.loadFXML("register.fxml", globals));
-    Router.addRoute("/notes", () -> CustomFXMLLoader.loadFXML("notes.fxml", globals));
-    Router.gotoRoute("/login");
+    globals.router.addRoute("/login", () -> CustomFXMLLoader.loadFXML("login.fxml", globals));
+    globals.router.addRoute("/register", () -> CustomFXMLLoader.loadFXML("register.fxml", globals));
+    globals.router.addRoute("/notes", () -> CustomFXMLLoader.loadFXML("notes.fxml", globals));
+    globals.router.gotoRoute("/login");
   }
 }

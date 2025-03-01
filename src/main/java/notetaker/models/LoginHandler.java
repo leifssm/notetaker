@@ -6,8 +6,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class LoginHandler {
-  private static final String USERS_FILE = "users.txt";
-  public LoginHandler() {}
+  private final @NotNull String userFile;
+
+  public LoginHandler(@NotNull String userFile) {
+    this.userFile = userFile;
+  }
 
   public void login(String username, String password) throws LoginError {
     final var storedPassword = getPassword(username);
@@ -30,7 +33,7 @@ public class LoginHandler {
     try {
       // Stored in plaintext for readability, but should be salted and hashed in a
       // real application
-      FileHandler.appendToFile(USERS_FILE, username + "|" + password + "\n");
+      FileHandler.appendToFile(this.userFile, username + "|" + password + "\n");
     } catch (FileNotFoundException e) {
       throw new LoginError("Could not register user, internal error");
     }
@@ -38,7 +41,7 @@ public class LoginHandler {
 
   private @Nullable String getPassword(@NotNull String user) throws LoginError {
     try {
-      String[] lines = FileHandler.readFile(USERS_FILE).split("\n");
+      String[] lines = FileHandler.readFile(this.userFile).split("\n");
       for (String line : lines) {
         String[] parts = line.split("\\|");
         if (parts.length != 2) {

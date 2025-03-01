@@ -45,6 +45,8 @@ public class NotesController implements BaseController, Initializable {
 
   private @Nullable FileAccessHandler fileAccessHandler;
 
+  private @NotNull FileNamer fileNamer = new FileNamer();
+
   @Override
   public void initialize(URL location, ResourceBundle resources) {
     content.textProperty().subscribe(this::contentChanged);
@@ -72,12 +74,12 @@ public class NotesController implements BaseController, Initializable {
   @FXML
   public void logOut() {
     globals.user.set(null);
-    Router.gotoRoute("/login");
+    globals.router.gotoRoute("/login");
   }
 
   @FXML
   public void newNote() {
-    String noteName = FileNamer.getValidName("New Note.txt", getNotes());
+    String noteName = fileNamer.getValidName("New Note.txt", getNotes());
     if (noteName == null) {
       throw new RuntimeException("Could not create new note, error should not happen xd");
     }

@@ -9,7 +9,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import notetaker.models.Globals;
 import notetaker.models.LoginHandler;
-import notetaker.models.Router;
 import notetaker.models.LoginHandler.LoginError;
 
 public class RegisterController implements Initializable, BaseController {
@@ -32,7 +31,7 @@ public class RegisterController implements Initializable, BaseController {
 
   @FXML
   public void initialize(URL location, ResourceBundle resources) {
-    loginHandler = new LoginHandler();
+    loginHandler = new LoginHandler("users.txt");
   }
 
   public void setGlobals(Globals globals) {
@@ -44,7 +43,7 @@ public class RegisterController implements Initializable, BaseController {
     String username = this.username.getText();
     String password = this.password.getText();
     String repeatPassword = this.repeatPassword.getText();
-    
+
     if (!password.equals(repeatPassword)) {
       handleError("Passwords do not match");
       return;
@@ -52,7 +51,7 @@ public class RegisterController implements Initializable, BaseController {
     try {
       loginHandler.register(username, password);
       globals.user.set(username);
-      Router.gotoRoute("/notes");
+      globals.router.gotoRoute("/notes");
     } catch (LoginError e) {
       handleError(e);
     }
@@ -60,7 +59,7 @@ public class RegisterController implements Initializable, BaseController {
 
   @FXML
   public void gotoLogin() {
-    Router.gotoRoute("/login");
+    globals.router.gotoRoute("/login");
   }
 
   private void handleError(Exception error) {

@@ -13,11 +13,11 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.Parent;
 
 public class Router {
-  static private Map<String, Supplier<@NotNull Parent>> routes = new HashMap<>();
-  static private SimpleStringProperty route = new SimpleStringProperty("/");
-  static private SimpleObjectProperty<Parent> view = new SimpleObjectProperty<>(null);
+  private final Map<String, Supplier<@NotNull Parent>> routes = new HashMap<>();
+  private final SimpleStringProperty route = new SimpleStringProperty("/");
+  private final SimpleObjectProperty<Parent> view = new SimpleObjectProperty<>(null);
 
-  static {
+  public Router() {
     route.addListener((observable, oldValue, newValue) -> {
       if (routes.containsKey(newValue)) {
         view.set(routes.get(newValue).get());
@@ -27,18 +27,18 @@ public class Router {
     });
   }
   
-  static private boolean isValidRoute(@NotNull String route) {
+  private boolean isValidRoute(@NotNull String route) {
     return route.matches("/[\\w/]*");
   }
 
-  static public void gotoRoute(@NotNull String route) {
-    if (!isValidRoute(route)) {
+  public void gotoRoute(@NotNull String newRoute) {
+    if (!isValidRoute(newRoute)) {
       throw new IllegalArgumentException("Invalid route");
     }
-    Router.route.set(route);
+    route.set(newRoute);
   }
   
-  static public void addRoute(@NotNull String route, @Nullable Supplier<@NotNull Parent> view) {
+  public void addRoute(@NotNull String route, @Nullable Supplier<@NotNull Parent> view) {
     if (routes.containsKey(route)) {
       throw new IllegalArgumentException("Route already exists");
     }
@@ -49,19 +49,19 @@ public class Router {
     routes.put(route, view);
   }
 
-  static public SimpleStringProperty routeProperty() {
+  public SimpleStringProperty routeProperty() {
     return route;
   }
 
-  static public @NotNull String getRoute() {
+  public @NotNull String getRoute() {
     return route.get();
   }
 
-  static public SimpleObjectProperty<Parent> viewProperty() {
+  public SimpleObjectProperty<Parent> viewProperty() {
     return view;
   }
 
-  static public @Nullable Parent getView() {
+  public @Nullable Parent getView() {
     return view.get();
   }
 }
