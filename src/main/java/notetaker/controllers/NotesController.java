@@ -92,6 +92,7 @@ public class NotesController implements BaseController, Initializable {
     if (name == null) {
       fileAccessHandler = null;
       content.setText("Select a note to edit");
+      content.setDisable(true);
       fileName.setText("Select a note to edit");
       fileName.setDisable(true);
       setSaveable(false);
@@ -102,6 +103,7 @@ public class NotesController implements BaseController, Initializable {
     try {
       fileAccessHandler = new FileAccessHandler(notePath);
       content.setText(fileAccessHandler.getContent());
+      content.setDisable(false);
       fileName.setText(name);
       fileName.setDisable(false);
       setSaveable(false);

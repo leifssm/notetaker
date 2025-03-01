@@ -45,7 +45,7 @@ public class LoginHandler {
           continue;
         }
         if (parts[0].equals(user)) {
-          return parts[1];
+          return parts[1].trim();
         }
       }
     } catch (FileNotFoundException e) {
@@ -63,8 +63,6 @@ public class LoginHandler {
       throw new LoginError(
           "Username must be 2-16 characters long and contain only letters, numbers, hyphens, and underscores");
     }
-
-    
   }
 
   private void validatePassword(@NotNull String password) throws LoginError {
