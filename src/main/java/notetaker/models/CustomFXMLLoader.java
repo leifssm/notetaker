@@ -1,4 +1,4 @@
-package notetaker.views;
+package notetaker.models;
 
 import java.net.URL;
 
@@ -7,11 +7,10 @@ import org.jetbrains.annotations.NotNull;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import notetaker.controllers.BaseController;
-import notetaker.models.Globals;
 
 public class CustomFXMLLoader {
   static public @NotNull Parent loadFXML(@NotNull String fxml, Globals globals) {
-    URL url = CustomFXMLLoader.class.getResource(fxml);
+    URL url = FileHandler.getFXMLResource(fxml);
     if (url == null) {
       throw new IllegalArgumentException("Resource not found: " + fxml);
     }
