@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
@@ -22,7 +23,8 @@ public class NoteItem extends BorderPane {
     main.setCursor(Cursor.HAND);
     main.setAlignment(Pos.BASELINE_LEFT);
 
-    Button delete = new Button("🗑️");
+    Button delete = new Button("x");
+    delete.setTooltip(new Tooltip("Delete note"));
     delete.setBackground(Background.fill(Color.RED));
     delete.setOnMouseClicked((event) -> onDelete.run());
     delete.setCursor(Cursor.HAND);
