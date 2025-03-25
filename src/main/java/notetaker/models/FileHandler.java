@@ -4,11 +4,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 
@@ -25,7 +23,7 @@ public class FileHandler {
     if (url == null) {
       throw new RuntimeException("Storage not found: /resources/notetaker/storage");
     }
-    boolean shouldAddSlash = filePath.matches("(?:.*\\/)?\\w+");
+    boolean shouldAddSlash = filePath.matches("(?:.*/)?\\w+");
     return url.getFile() + filePath + (shouldAddSlash ? "/" : "");
   }
 

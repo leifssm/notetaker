@@ -11,8 +11,11 @@ public class FileNamer {
   public FileNamer() {}
 
   public @Nullable String getValidName(@NotNull String name, @NotNull List<@NotNull String> takenNames) {
+    if (name == null) {
+      throw new IllegalArgumentException("Name cannot be null");
+    }
     if (!name.matches("[a-zA-Z0-9 \\-_()]+\\.[a-zA-Z0-9]+")) {
-      return "nuhuh " + name;
+      return null;
     }
     if (!takenNames.contains(name)) {
       return name;
