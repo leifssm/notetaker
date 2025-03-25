@@ -26,7 +26,6 @@ public class RegisterController implements Initializable, BaseController {
   @FXML
   private Label feedback;
 
-  @FXML
   private LoginHandler loginHandler;
 
   @FXML

@@ -1,7 +1,6 @@
 package notetaker.controllers;
 
 import java.io.FileNotFoundException;
-import java.net.FileNameMap;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -22,7 +21,6 @@ import notetaker.models.FileAccessHandler;
 import notetaker.models.FileHandler;
 import notetaker.models.FileNamer;
 import notetaker.models.Globals;
-import notetaker.models.Router;
 import notetaker.views.components.NoteItem;
 
 public class NotesController implements BaseController, Initializable {

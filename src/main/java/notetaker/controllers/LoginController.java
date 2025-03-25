@@ -10,6 +10,7 @@ import javafx.scene.control.TextField;
 import notetaker.models.Globals;
 import notetaker.models.LoginHandler;
 import notetaker.models.LoginHandler.LoginError;
+import org.jetbrains.annotations.NotNull;
 
 public class LoginController implements Initializable, BaseController {
   private Globals globals;
@@ -31,7 +32,7 @@ public class LoginController implements Initializable, BaseController {
     loginHandler = new LoginHandler("users.txt");
   }
 
-  public void setGlobals(Globals globals) {
+  public void setGlobals(@NotNull Globals globals) {
     this.globals = globals;
   }
 

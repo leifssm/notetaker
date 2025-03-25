@@ -19,7 +19,7 @@ public class CustomFXMLLoader {
       Parent scene = loader.load();
       
       BaseController controller = loader.getController();
-      if (controller != null) {
+      if (controller != null && globals != null) {
         controller.setGlobals(globals);
       } else {
         System.err.println("Controller not found for: " + fxml);
@@ -29,5 +29,9 @@ public class CustomFXMLLoader {
     } catch (Exception e) {
       throw new IllegalArgumentException("Failed to load resource: " + fxml, e);
     }
+  }
+
+  static public @NotNull Parent loadFXML(@NotNull String fxml) {
+    return loadFXML(fxml, null);
   }
 }
