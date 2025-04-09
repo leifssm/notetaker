@@ -13,7 +13,7 @@ public class LoginHandler {
   }
 
   public void login(String username, String password) throws LoginError {
-    final var storedPassword = getPassword(username);
+    String storedPassword = getPassword(username);
     if (storedPassword == null) {
       throw new LoginError("User not found, please register");
     }
@@ -39,20 +39,11 @@ public class LoginHandler {
     }
   }
 
-  private @Nullable String getPassword(@NotNull String user) throws LoginError {
-    try {
-      String[] lines = FileHandler.readFile(this.userFile).split("\n");
-      for (String line : lines) {
-        String[] parts = line.split("\\|");
-        if (parts.length != 2) {
-          continue;
-        }
-        if (parts[0].equals(user)) {
-          return parts[1].trim();
-        }
+  private @Nullable String getPassword(@NotNull String username) throws LoginError {
+    for (UserProvider.User user : new UserProvider(this.userFile)) {
+      if (user.username().equals(username)) {
+        return user.password();
       }
-    } catch (FileNotFoundException e) {
-      throw new LoginError("Could not access data, internal error");
     }
     return null;
   }
@@ -75,7 +66,7 @@ public class LoginHandler {
     }
   }
 
-  public class LoginError extends Exception {
+  public static class LoginError extends Exception {
     public LoginError(String message) {
       super(message);
     }
