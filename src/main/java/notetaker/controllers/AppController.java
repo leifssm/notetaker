@@ -28,9 +28,11 @@ public class AppController implements Initializable, BaseController {
     globals.router
         .routeProperty()
         .subscribe(route -> System.out.println("Navigating to: " + route));
+
     globals.router.addRoute("/login", () -> CustomFXMLLoader.loadFXML("login.fxml", globals));
     globals.router.addRoute("/register", () -> CustomFXMLLoader.loadFXML("register.fxml", globals));
     globals.router.addRoute("/notes", () -> CustomFXMLLoader.loadFXML("notes.fxml", globals));
+
     globals.router.gotoRoute("/login");
   }
 }

@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import notetaker.models.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,10 +18,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import notetaker.models.FileAccessHandler;
-import notetaker.models.FileHandler;
-import notetaker.models.FileNamer;
-import notetaker.models.Globals;
 import notetaker.views.components.NoteItem;
 
 public class NotesController implements BaseController, Initializable {
@@ -41,9 +38,7 @@ public class NotesController implements BaseController, Initializable {
   @FXML
   private Button saveButton;
 
-  private @Nullable FileAccessHandler fileAccessHandler;
-
-  private @NotNull FileNamer fileNamer = new FileNamer();
+  private @NotNull NoteHandler noteHandler = new NoteHandler();
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
@@ -55,19 +50,12 @@ public class NotesController implements BaseController, Initializable {
     });
   }
 
-  public void setGlobals(Globals globals) {
+  public void setGlobals(@NotNull Globals globals) {
     this.globals = globals;
     globals.user.subscribe(this.userLabel::setText);
     setNote(null);
     renderNotes();
   }
-
-  private @NotNull String getLocation(@Nullable String note) {
-    if (note == null) {
-      return "notes/" + globals.user.get() + "/";
-    }
-    return "notes/" + globals.user.get() + "/" + note;
-  } 
 
   @FXML
   public void logOut() {
@@ -77,20 +65,16 @@ public class NotesController implements BaseController, Initializable {
 
   @FXML
   public void newNote() {
-    String noteName = fileNamer.getValidName("New Note.txt", getNotes());
-    if (noteName == null) {
-      throw new RuntimeException("Could not create new note, error should not happen xd");
-    }
-    boolean success = FileHandler.createFile(getLocation(noteName));
-    if (success) {
-      setNote(noteName);
+    String fileName = noteHandler.createNewNote(globals.user.get());
+    if (fileName != null) {
+      setNote(fileName);
       renderNotes();
     }
   }
 
   public void setNote(@Nullable String name) {
     if (name == null) {
-      fileAccessHandler = null;
+      noteHandler.closeNote();
       content.setText("Select a note to edit");
       content.setDisable(true);
       fileName.setText("Select a note to edit");
@@ -99,60 +83,47 @@ public class NotesController implements BaseController, Initializable {
       return;
     }
 
-    String notePath = getLocation(name);
+
     try {
-      fileAccessHandler = new FileAccessHandler(notePath);
-      content.setText(fileAccessHandler.getContent());
+      noteHandler.openNote(globals.user.get(), name);
+      content.setText(noteHandler.readCurrentNoteContent());
+
       content.setDisable(false);
       fileName.setText(name);
       fileName.setDisable(false);
       setSaveable(false);
     } catch (FileNotFoundException e) {
-      System.err.println("Could not find file: " + notePath);
-      e.printStackTrace();
+      System.err.println("Could not find file: " + name);
       renderNotes();
     }
   }
 
-  public void deleteNote(String name) {
-    FileHandler.deleteFile(getLocation(name));
-    if (fileAccessHandler != null && fileAccessHandler.getPath().equals(getLocation(name))) {
-      fileAccessHandler = null;
-      setNote(null);
-    }
+  public void deleteNote(String fileName) {
+    boolean deletedCurrentOpenNote = noteHandler.deleteNote(globals.user.get(), fileName);
+
+    if (deletedCurrentOpenNote) setNote(null);
+
     renderNotes();
   }
 
-  private void renameNote(String newName) {
-    if (fileAccessHandler == null) {
-      return;
-    }
-    boolean success = fileAccessHandler.rename(newName);
-    System.out.println(success);
-    if (success) {
-      renderNotes();
-      setNote(newName);
-      fileName.setText(newName);
-    } else {
-      fileName.setText(fileAccessHandler.getName());
-    }
+  public void renameNote(String newName) {
+    String name = noteHandler.renameCurrentNote(newName);
+    fileName.setText(name);
+    if (name.equals(newName)) return;
+
+    renderNotes();
+    setNote(newName);
   }
 
   public void contentChanged() {
-    if (fileAccessHandler != null) {
-      fileAccessHandler.setContent(content.getText());
-      setSaveable(fileAccessHandler.hasChanged());
-    } else {
-      setSaveable(false);
-    }
+    boolean hasChanged = noteHandler.notifyContentChanged(content.getText());
+    setSaveable(hasChanged);
   }
 
   @FXML
   public void save() {
+    noteHandler.saveCurrentFile();
     setSaveable(false);
-    if (fileAccessHandler != null) {
-      fileAccessHandler.save();
-    }
   }
 
   private void setSaveable(boolean saveable) {
@@ -161,12 +132,8 @@ public class NotesController implements BaseController, Initializable {
     saveButton.setBackground(saveable ? Background.fill(Color.LIGHTGREEN) : Background.EMPTY);
   }
 
-  private List<String> getNotes() {
-    return FileHandler.getFilesInDirectory(getLocation(null), true);
-  }
-
   private void renderNotes() {
-    List<String> notes = getNotes();
+    List<String> notes = noteHandler.getNotes(globals.user.get());
     notelist
       .getChildren()
       .setAll(
