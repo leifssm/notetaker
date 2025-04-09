@@ -9,7 +9,10 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.intellij.lang.annotations.RegExp;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -129,13 +132,16 @@ public class FileHandler {
     createFile(filePath);
 
     String path = getValidFilePath(filePath);
+    if (path == null) {
+      throw new IllegalArgumentException("Invalid file path: " + filePath);
+    }
     File file = new File(path);
 
     try {
       PrintWriter writer = new PrintWriter(file);
       writer.print(content);
       writer.close();
-    } catch (IOException e) {
+    } catch (FileNotFoundException e) {
       throw new RuntimeException("Could not write to file: " + filePath);
     }
   }

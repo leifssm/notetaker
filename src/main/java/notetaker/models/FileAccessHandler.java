@@ -2,6 +2,8 @@ package notetaker.models;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -59,7 +61,12 @@ public class FileAccessHandler {
     if (newPath == null) {
       return false;
     }
-    path = newPath;
+    Matcher matcher = Pattern
+        .compile(".*[/\\\\]([^/\\\\]+[/\\\\][^/\\\\]+[/\\\\][^/\\\\]+\\.txt)$")
+        .matcher(newPath);
+    if (!matcher.find()) return false;
+
+    path = matcher.group(1);
     return true;
   }
 }

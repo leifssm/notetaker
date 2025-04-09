@@ -109,10 +109,8 @@ public class NotesController implements BaseController, Initializable {
   public void renameNote(String newName) {
     String name = noteHandler.renameCurrentNote(newName);
     fileName.setText(name);
-    if (name.equals(newName)) return;
-
     renderNotes();
-    setNote(newName);
+    setNote(name);
   }
 
   public void contentChanged() {
