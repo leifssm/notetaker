@@ -12,6 +12,14 @@ The user can create as many notes as they want, which will be password protected
 ![ER Diagram](er-diagram.png)
 *This is an ER diagram of the classes used while a user is logged in*
 
+## Features
+
+- Multiple users
+- Creation of new users
+- Password protected notes
+- Creation and deletion of notes
+- Renaming and editing of notes
+
 ## Run Locally
 
 Clone the project
@@ -32,15 +40,6 @@ Run the project
 mvn javafx:run
 ```
 
-## Features
-
-- Multiple users
-- Creation of new users
-- Password protected notes
-- Creation and deletion of notes
-- Renaming and editing of notes
-
-
 ## Running Tests
 
 To run tests, run the following command
@@ -58,7 +57,7 @@ For the task, the students had to also answer the following questions:
   - Interface brukes i klassen UserProvider som gir en iterable med brukere.
   - Delegering brukes bl.a. av alle kontrollerene som delegerer arbeidet til modellene. Delegering brukes også bl.a. av FileHandler som delegerer håndteringen av save-staten til filene til FileAccessHandler.
 - Dersom deler av pensum ikke er dekket i prosjektet deres, hvordan kunne dere brukt disse delene av pensum i appen?
-  - Burde jeg nevne noe her? TODO
+  - Jeg brukte ikke instanceof eller Comparable da disse ikke var relevant for prosjektet mitt i den skalaen den er, og håndterte ikke Input/OutputStreams direkte. Jeg brukte derimot PrintWriter, som fungerte som et mellomledd for bruk av OutputStreamWriter.
 - Hvordan forholder koden deres seg til Model-View-Controller-prinsippet? (Merk: det er ikke nødvendig at koden er helt perfekt i forhold til Model-View-Controller standarder. Det er mulig (og bra) å reflektere rundt svakheter i egen kode)
   - Koden bruker MVC prinsippet ved å delegere funksjonalitet til models, ui komponenter til views og kontrolleren som en mellommann som håndterer kommunikasjonen mellom de to. Minimalt av logikk skal skje i kontrollerene som man kan se ettersom at mesteparten av arbeidet delegeres til modellene.
 - Hvordan har dere gått frem når dere skulle teste appen deres, og hvorfor har dere valgt de testene dere har? Har dere testet alle deler av koden? Hvis ikke, hvordan har dere prioritert hvilke deler som testes og ikke? (Her er tanken at dere skal reflektere rundt egen bruk av tester)
